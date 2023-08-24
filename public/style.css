@@ -2,7 +2,7 @@
     border-style: solid;
     padding: 10px;
     margin: auto;
-    width: 50%;
+    width: 40%;
    
 }
 
@@ -14,7 +14,7 @@
     
 }
 
-body > table{
+body  table{
     width: 80%;
 }
 
