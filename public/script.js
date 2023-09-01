@@ -62,16 +62,16 @@ if(login!=null){
                         message.innerHTML=`<h5 style="text-align: center;color:green">${res.data.message}</h5>`
                     }
         
-                    
-                    
-                    
-                    
                 }).catch(err=>{
+                    
                     const data=err.response.data.message;
                     if(err.response.status===401){
                         message.innerHTML=`<h5 style="text-align: center;color:red">${data}</h5>`
                     }
                     if(err.response.status===404){
+                        message.innerHTML=`<h5 style="text-align: center;color:red">${data}</h5>`
+                    }
+                    if(err.response.status===500){
                         message.innerHTML=`<h5 style="text-align: center;color:red">${data}</h5>`
                     }
                     
