@@ -1,6 +1,8 @@
 const { json } = require('body-parser');
 const SignUp=require('../Model/signUpModel')
 const bcrypt=require('bcrypt');
+const path = require('path');
+const rootDir= path.dirname(process.mainModule.filename);
 exports.postLogin=(req,res,next)=>{
     const email=req.body.email;
     const password=req.body.password;
@@ -13,7 +15,8 @@ exports.postLogin=(req,res,next)=>{
                 res.status(500).json({success:true,message:"something went wrong"});
             }
             if(result==true){
-                res.status(200).json({success:true,message:"Login Successfully"});
+              res.status(200).json({success:true,message:"Login Successfully"});
+              
             }else{
                return res.status(401).json({message:"incorrect password"});
             }

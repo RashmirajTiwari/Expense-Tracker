@@ -58,8 +58,9 @@ if(login!=null){
                  await axios.post("http://localhost:3000/user/login",login).then(res=>{
                     
                     if(res.status===200){
-                        
-                        message.innerHTML=`<h5 style="text-align: center;color:green">${res.data.message}</h5>`
+                        alert(res.data.message);
+                        window.location.href="../views/expense.html"
+                        //message.innerHTML=`<h5 style="text-align: center;color:green">${res.data.message}</h5>`
                     }
         
                 }).catch(err=>{
