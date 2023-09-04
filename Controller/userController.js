@@ -1,4 +1,4 @@
-const SignUp=require('../Model/signUpModel')
+const SignUp=require('../Model/userModel')
 const bcrypt=require('bcrypt');
 exports.postSignUp=(req,res,next)=>{
 

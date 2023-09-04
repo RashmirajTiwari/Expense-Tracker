@@ -1,4 +1,4 @@
-const signupController=require('../Controller/signupController');
+const signupController=require('../Controller/userController');
 const loginController=require('../Controller/loginController');
 const express=require('express');
 const router=express.Router();

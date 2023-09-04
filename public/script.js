@@ -59,6 +59,8 @@ if(login!=null){
                     
                     if(res.status===200){
                         alert(res.data.message);
+                        console.log(res.data);
+                        localStorage.setItem('token',res.data.token)
                         window.location.href="../views/expense.html"
                         //message.innerHTML=`<h5 style="text-align: center;color:green">${res.data.message}</h5>`
                     }

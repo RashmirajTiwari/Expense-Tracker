@@ -5,7 +5,7 @@ exports.postExpenses= (req, res, next) => {
     const category = req.body.category;
     const price = req.body.price;
     const quantity = req.body.quantity;
-    Expense.create({
+    req.user.createExpense({
       itemName:itemName,
       category:category,
       price:price,
@@ -44,7 +44,7 @@ exports.editExpenses = (req, res, next) => {
 };
 
 exports.getExpenses = (req, res, next) => {
-  Expense.findAll().then(results=>{
+  Expense.findAll({where:{userId:req.user.id}}).then(results=>{
   res.json(results);
   }).catch(err=>{
     console.log(err);

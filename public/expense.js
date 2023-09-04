@@ -1,24 +1,28 @@
 var list = document.getElementById('items');
 function getAllExpenses(){
     window.addEventListener("DOMContentLoaded", async () => {
-        try {
-            let res = await axios.get("http://localhost:3000/getExpenses")
-            for (let i = 0; i < res.data.length; i++) {
-                list.innerHTML += 
-                `<li>
-                <span class="span" style="display:none">${res.data[i].id}</span>
-                <span class="span" >${res.data[i].itemName}</span>
-                <span class="span" >${res.data[i].category}</span>
-                <span class="span" >${res.data[i].price}</span>
-                <span class="span" >${res.data[i].quantity}</span>
-                <button class="edit-btn">Edit</button>
-                <button class="delete-btn">Delete</button>
-                </li>`
-            }
-        } catch (error) {
-            console.log(error)
-    
-        }
+        
+            const token=localStorage.getItem('token');
+            await axios.get("http://localhost:3000/getExpenses",{headers:{"Authorization":token}}).
+            then(res=>{
+                for (let i = 0; i < res.data.length; i++) {
+                    list.innerHTML += 
+                    `<li>
+                    <span class="span" style="display:none">${res.data[i].id}</span>
+                    <span class="span" >${res.data[i].itemName}</span>
+                    <span class="span" >${res.data[i].category}</span>
+                    <span class="span" >${res.data[i].price}</span>
+                    <span class="span" >${res.data[i].quantity}</span>
+                    <button class="edit-btn">Edit</button>
+                    <button class="delete-btn">Delete</button>
+                    </li>`
+                }
+            }).
+            catch(err=>{
+                console.log(err);
+            })
+           
+      
 })
 }
 
@@ -45,7 +49,8 @@ submit.addEventListener("click", async (e) => {
         const id=ExpenseId.value;
     if(id==''){
     //Add Expenses
-    const res=  await axios.post("http://localhost:3000/postExpenses",expense);
+    const token=localStorage.getItem('token');
+    const res=  await axios.post("http://localhost:3000/postExpenses",expense,{headers:{"Authorization":token}});
     showExpenses(res);
    
     }else{
