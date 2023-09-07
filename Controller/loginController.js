@@ -19,7 +19,7 @@ exports.postLogin=(req,res,next)=>{
                 res.status(500).json({success:true,message:"something went wrong"});
             }
             if(result==true){
-              res.status(200).json({success:true,message:"Login Successfully",token:generateAccessToken(user[0].id)});
+              res.status(200).json({success:true,message:"Login Successfully",token:generateAccessToken(user[0].id),user:user[0]});
               
             }else{
                return res.status(401).json({message:"incorrect password"});

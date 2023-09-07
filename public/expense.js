@@ -1,3 +1,5 @@
+
+
 var list = document.getElementById('items');
 function getAllExpenses(){
     window.addEventListener("DOMContentLoaded", async () => {
@@ -139,4 +141,38 @@ function showExpenses(res){
 
 }
 
+//purchase
+var razorpayBtn = document.getElementById("razorpayBtn");
+razorpayBtn.addEventListener("click", async (e) => {
+    const token=localStorage.getItem('token');
+    const response=await axios.get("http://localhost:3000/purchase/premiummembership",{headers:{"Authorization":token}})
+    console.log(response);
+    var options=
+    {
+        "key":response.data.key_id,
+        "order_id":response.data.order.id,
+        "handler":async function(response){
+            await axios.post("http://localhost:3000/purchase/updatetranactionstatus",{
+                order_id:options.order_id,
+                payment_id:response.razorpay_payment_id
+
+            },{headers:{"Authorization":token}})
+            
+            alert('you are a premium user now');
+        }
+    }
+    const rzp1=new Razorpay(options);
+    rzp1.open();
+    e.preventDefault();
+    
+    rzp1.on('payment.failed',function(response){
+        console.log(response);
+        alert('something went wrong');
+    })
+})
+const buyPremium= document.getElementById('buyPremium');
+const isPremiumuser=localStorage.getItem('isPremiumuser')
+if(isPremiumuser=='true'){
+    buyPremium.innerHTML=`<h5 style="text-align: center;color:green">You are a premium user</h5>`
+}
 getAllExpenses();
