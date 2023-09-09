@@ -3,8 +3,8 @@ const SignUp=require('../Model/userModel')
 const bcrypt=require('bcrypt');
 const jwt=require('jsonwebtoken');
 
-function generateAccessToken(id){
-    return jwt.sign({userId:id},'secretkey');
+function generateAccessToken(id,ispremiumuser){
+    return jwt.sign({userId:id,ispremiumuser},'secretkey');
 }
 
 exports.postLogin=(req,res,next)=>{
@@ -19,7 +19,7 @@ exports.postLogin=(req,res,next)=>{
                 res.status(500).json({success:true,message:"something went wrong"});
             }
             if(result==true){
-              res.status(200).json({success:true,message:"Login Successfully",token:generateAccessToken(user[0].id),user:user[0]});
+              res.status(200).json({success:true,message:"Login Successfully",token:generateAccessToken(user[0].id,user[0].ispremiumuser)});
               
             }else{
                return res.status(401).json({message:"incorrect password"});

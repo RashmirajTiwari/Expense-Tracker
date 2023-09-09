@@ -1,10 +1,27 @@
+function parseJwt (token) {
+    var base64Url = token.split('.')[1];
+    var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
+    var jsonPayload = decodeURIComponent(window.atob(base64).split('').map(function(c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
 
+    return JSON.parse(jsonPayload);
+}
 
 var list = document.getElementById('items');
+const buyPremium= document.getElementById('buyPremium');
+
 function getAllExpenses(){
     window.addEventListener("DOMContentLoaded", async () => {
         
             const token=localStorage.getItem('token');
+            const decode=parseJwt(token);
+            const ispremiumuser=decode.ispremiumuser
+    
+            if(ispremiumuser){
+                showMessagePremiumuser();
+                showLeaderBoard();
+            }
             await axios.get("http://localhost:3000/getExpenses",{headers:{"Authorization":token}}).
             then(res=>{
                 for (let i = 0; i < res.data.length; i++) {
@@ -23,9 +40,9 @@ function getAllExpenses(){
             catch(err=>{
                 console.log(err);
             })
-           
-      
+            
 })
+
 }
 
 
@@ -145,6 +162,7 @@ function showExpenses(res){
 var razorpayBtn = document.getElementById("razorpayBtn");
 razorpayBtn.addEventListener("click", async (e) => {
     const token=localStorage.getItem('token');
+   
     const response=await axios.get("http://localhost:3000/purchase/premiummembership",{headers:{"Authorization":token}})
     console.log(response);
     var options=
@@ -152,13 +170,19 @@ razorpayBtn.addEventListener("click", async (e) => {
         "key":response.data.key_id,
         "order_id":response.data.order.id,
         "handler":async function(response){
-            await axios.post("http://localhost:3000/purchase/updatetranactionstatus",{
+          const res=  await axios.post("http://localhost:3000/purchase/updatetranactionstatus",{
                 order_id:options.order_id,
                 payment_id:response.razorpay_payment_id
 
             },{headers:{"Authorization":token}})
             
             alert('you are a premium user now');
+
+            localStorage.setItem('token',res.data.token);
+               
+            showMessagePremiumuser();
+            showLeaderBoard();
+
         }
     }
     const rzp1=new Razorpay(options);
@@ -170,9 +194,31 @@ razorpayBtn.addEventListener("click", async (e) => {
         alert('something went wrong');
     })
 })
-const buyPremium= document.getElementById('buyPremium');
-const isPremiumuser=localStorage.getItem('isPremiumuser')
-if(isPremiumuser=='true'){
-    buyPremium.innerHTML=`<h5 style="text-align: center;color:green">You are a premium user</h5>`
-}
 getAllExpenses();
+
+function showMessagePremiumuser(){
+    document.getElementById('razorpayBtn').style.visibility="hidden";
+    document.getElementById('buyPremium').innerHTML="You are a premium user";
+}
+function showLeaderBoard(){
+    const leaderboardBtn=document.getElementById('leaderboardBtn');
+    const leaderboard=document.getElementById('leaderboard');
+    leaderboardBtn.addEventListener("click", async (e) => {
+        const token=localStorage.getItem('token');
+        const res=  await axios.get("http://localhost:3000/premium/showLeaderBoard",{headers:{"Authorization":token}});
+        
+        for (let i = 0; i < res.data.length; i++) {
+            leaderboard.innerHTML += 
+            `<li>
+           
+            <span class="span" >${res.data[i].name}</span>
+            <span class="span" >${res.data[i].total_cost}</span>
+            
+            
+            </li>`
+        }
+    });
+
+}
+
+ 
