@@ -1,5 +1,6 @@
 
 const Expense=require('../Model/expenseModel');
+const User=require('../Model/userModel');
 exports.postExpenses= (req, res, next) => {
     const itemName = req.body.itemName;
     const category = req.body.category;
@@ -12,9 +13,13 @@ exports.postExpenses= (req, res, next) => {
       quantity:quantity
 
     }
-    ).then(result=>{
-      console.log(result);
-      res.json(result);
+    ).then(expense=>{
+      const totalExpense=Number(req.user.totalExpenses)+Number(price);
+      User.update({totalExpenses:totalExpense},{where:{id:req.user.id}}).then(()=>{
+        res.status(200).json({expense:expense});
+      }).catch(err=>{
+        res.status(500).json({success:false,error:err});
+      })
     }).catch(err=>{
       console.log(err);
     })

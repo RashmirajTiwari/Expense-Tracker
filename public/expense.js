@@ -202,6 +202,7 @@ function showMessagePremiumuser(){
 }
 function showLeaderBoard(){
     const leaderboardBtn=document.getElementById('leaderboardBtn');
+    document.getElementById('leaderboardBtn').style.display='block';
     const leaderboard=document.getElementById('leaderboard');
     leaderboardBtn.addEventListener("click", async (e) => {
         const token=localStorage.getItem('token');
@@ -212,7 +213,7 @@ function showLeaderBoard(){
             `<li>
            
             <span class="span" >${res.data[i].name}</span>
-            <span class="span" >${res.data[i].total_cost}</span>
+            <span class="span" >${res.data[i].totalExpenses}</span>
             
             
             </li>`
