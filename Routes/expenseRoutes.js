@@ -6,5 +6,5 @@ const router=express.Router();
 router.get('/getExpenses',userAuthentication.authenticate,expenseController.getExpenses);
 router.post('/postExpenses',userAuthentication.authenticate,expenseController.postExpenses);
 router.put('/editExpenses/:ExpenseId',expenseController.editExpenses);
-router.delete('/deleteExpenses/:ExpenseId',expenseController.deleteExpenses);
+router.delete('/deleteExpenses/:ExpenseId',userAuthentication.authenticate,expenseController.deleteExpenses);
 module.exports=router;

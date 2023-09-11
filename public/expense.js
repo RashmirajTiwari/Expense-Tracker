@@ -96,10 +96,11 @@ list.addEventListener('click', async (e) => {
     try {
         if (e.target.classList.contains("delete-btn")) {
             if (confirm("Are You Sure ?")) {
+                const token=localStorage.getItem('token');
                 const li = e.target.parentElement;
                 const id = li.firstElementChild.innerText
                 list.removeChild(li);
-                await axios.delete(`http://localhost:3000/deleteExpenses/${id}`);
+                await axios.delete(`http://localhost:3000/deleteExpenses/${id}`,{headers:{"Authorization":token}});
               
 
             }
