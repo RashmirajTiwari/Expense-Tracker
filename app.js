@@ -5,6 +5,8 @@ const app=express();
 const cors = require('cors');
 app.use(cors());
 
+
+
 const userRoutes=require('./Routes/userRoutes');
 const expenseRoutes=require('./Routes/expenseRoutes');
 const purchaseRoutes=require('./Routes/purchaseRoutes');
@@ -13,6 +15,7 @@ const forgotPasswordRoutes=require('./Routes/forgotPasswordRoutes');
 const User=require('./Model/userModel');
 const Expense=require('./Model/expenseModel');
 const Order=require('./Model/orders');
+const ForgotPassword=require('./Model/forgotPassword');
 
 app.use(bodyParser.json());
 app.use(userRoutes);
@@ -26,6 +29,13 @@ Expense.belongsTo(User);
 
 User.hasMany(Order);
 Order.belongsTo(User);
+
+User.hasMany(ForgotPassword);
+ForgotPassword.belongsTo(User);
+
+
+
+app.use(bodyParser.urlencoded({ extended: true }));
 
 sequelize.sync().then(result=>{
     //console.log(result);
