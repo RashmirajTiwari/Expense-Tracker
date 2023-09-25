@@ -21,6 +21,7 @@ function getAllExpenses(){
             if(ispremiumuser){
                 showMessagePremiumuser();
                 showLeaderBoard();
+                downloadexpense();
             }
             await axios.get("http://localhost:3000/getExpenses",{headers:{"Authorization":token}}).
             then(res=>{
@@ -183,6 +184,7 @@ razorpayBtn.addEventListener("click", async (e) => {
                
             showMessagePremiumuser();
             showLeaderBoard();
+            downloadexpense();
 
         }
     }
@@ -222,5 +224,31 @@ function showLeaderBoard(){
     });
 
 }
-
- 
+function downloadexpense(){
+    document.getElementById('downloadexpense').style.display='block';
+    var downloadexpense = document.getElementById('downloadexpense');
+    var errMessage = document.getElementById('errMessage');
+    downloadexpense.addEventListener('click',  (e) => {
+        const token=localStorage.getItem('token');
+        axios.get('http://localhost:3000/user/download', { headers: {"Authorization" : token} })
+        .then((response) => {
+            if(response.status === 200){
+                //the bcakend is essentially sending a download link
+                //  which if we open in browser, the file would download
+                var a = document.createElement("a");
+                a.href = response.data.fileUrl;
+                a.download = 'myexpense.csv';
+                a.click();
+            } else {
+                throw new Error(response)
+            }
+    
+        })
+        .catch((err) => {
+            const message=err.response.data.err.message;
+            errMessage.innerHTML=`<h5 style="text-align: center;color:red">${message}</h5>`
+        });
+       
+    })
+     
+}
