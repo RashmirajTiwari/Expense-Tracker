@@ -3,7 +3,8 @@ const Expense=require('../Model/expenseModel');
 const User=require('../Model/userModel');
 const sequelize = require('../util/database');
 const userservices=require('../Services/userservices')
-const S3Services=require('../Services/S3services')
+const S3Services=require('../Services/S3services');
+const { json } = require('body-parser');
 
 
 
@@ -57,13 +58,43 @@ exports.editExpenses = (req, res, next) => {
   })
  
 };
-
+const ITEM_PER_PAGE=2;
 exports.getExpenses = (req, res, next) => {
-  Expense.findAll({where:{userId:req.user.id}}).then(results=>{
-  res.json(results);
+  var page =+req.query.page;
+  console.log(page)
+  let totalItems;
+  
+  Expense.count().then((total)=>{
+    totalItems=total;
+    return Expense.findAll({
+      where:{userId:req.user.id},
+      offset:(page-1)* ITEM_PER_PAGE,
+      limit:ITEM_PER_PAGE
+    });
+  }).then((expenses)=>{
+      console.log("raj "+JSON.stringify(expenses))
+      res.json({
+        expenses:expenses,
+        currentPage:page,
+        hasNextPage:ITEM_PER_PAGE * page < totalItems,
+        nextPage:page+1,
+        hasPreviousPage:page>1,
+        previousPage:page-1,
+        lastPage:Math.ceil(totalItems/ITEM_PER_PAGE)
+
+
+      });
   }).catch(err=>{
     console.log(err);
   })
+
+
+
+  // Expense.findAll({where:{userId:req.user.id}}).then(results=>{
+  // res.json(results);
+  // }).catch(err=>{
+  //   console.log(err);
+  // })
 };
 
 exports.deleteExpenses = async(req, res, next) => {
