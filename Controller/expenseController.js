@@ -58,9 +58,10 @@ exports.editExpenses = (req, res, next) => {
   })
  
 };
-const ITEM_PER_PAGE=2;
+
 exports.getExpenses = (req, res, next) => {
-  var page =+req.query.page;
+  const page = +req.query.page;
+  const ITEM_PER_PAGE=+req.query.limit;
   console.log(page)
   let totalItems;
   

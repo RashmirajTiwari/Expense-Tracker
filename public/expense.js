@@ -24,7 +24,9 @@ function getAllExpenses(){
                 downloadexpense();
             }
             const page=1;
-            await axios.get(`http://localhost:3000/getExpenses?page=${page}`,{headers:{"Authorization":token}}).
+            const ITEM_PER_PAGE=2;
+            localStorage.setItem('ITEM_PER_PAGE',ITEM_PER_PAGE);
+            await axios.get(`http://localhost:3000/getExpenses?page=${page}&limit=${ITEM_PER_PAGE}`,{headers:{"Authorization":token}}).
             then(res=>{
                 console.log(res.data.expenses[0].itemName)
                 for (let i = 0; i < res.data.expenses.length; i++) {
@@ -266,7 +268,7 @@ function showPagination({
 }){
     var pagination = document.getElementById('pagination');
     pagination.innerHTML='';
-
+    
     if(hasPreviousPage){
         const btn2=document.createElement('button');
         btn2.innerHTML=previousPage;
@@ -275,7 +277,7 @@ function showPagination({
     }
 
         const btn1=document.createElement('button');
-        btn1.innerHTML=`<h3>${currentPage}</h3>`;
+        btn1.innerHTML=currentPage;
         btn1.addEventListener('click',()=>getExpense(currentPage));
         pagination.appendChild(btn1);
 
@@ -285,27 +287,29 @@ function showPagination({
             btn3.addEventListener('click',()=>getExpense(nextPage));
             pagination.appendChild(btn3);
         }
-
+        
 }
 
-    function  getExpense(){
-
+    function  getExpense(page){
+            list.innerHTML=''
             const token=localStorage.getItem('token');
-            const page=1;
-             axios.get(`http://localhost:3000/getExpenses?page=${page}`,{headers:{"Authorization":token}}).
+            const ITEM_PER_PAGE=localStorage.getItem('ITEM_PER_PAGE');
+             axios.get(`http://localhost:3000/getExpenses?page=${page}&limit=${ITEM_PER_PAGE}`,{headers:{"Authorization":token}}).
             then(res=>{
-                for (let i = 0; i < res.data.length; i++) {
+                for (let i = 0; i < res.data.expenses.length; i++) {
                     list.innerHTML += 
                     `<li>
-                    <span class="span" style="display:none">${res.data[i].id}</span>
-                    <span class="span" >${res.data[i].itemName}</span>
-                    <span class="span" >${res.data[i].category}</span>
-                    <span class="span" >${res.data[i].price}</span>
-                    <span class="span" >${res.data[i].quantity}</span>
+                    <span class="span" style="display:none">${res.data.expenses[i].id}</span>
+                    <span class="span" >${res.data.expenses[i].itemName}</span>
+                    <span class="span" >${res.data.expenses[i].category}</span>
+                    <span class="span" >${res.data.expenses[i].price}</span>
+                    <span class="span" >${res.data.expenses[i].quantity}</span>
                     <button class="edit-btn">Edit</button>
                     <button class="delete-btn">Delete</button>
                     </li>`
                 }
+                showPagination(res.data)
+                //list.innerHTML=''
             }).
             catch(err=>{
                 console.log(err);
