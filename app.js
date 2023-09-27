@@ -3,7 +3,9 @@ const bodyParser=require('body-parser');
 const sequelize=require('./util/database')
 const app=express();
 const cors = require('cors');
-app.use(cors());
+const path=require('path');
+const fs=require('fs');
+
 
 
 
@@ -16,7 +18,16 @@ const User=require('./Model/userModel');
 const Expense=require('./Model/expenseModel');
 const Order=require('./Model/orders');
 const ForgotPassword=require('./Model/forgotPassword');
+const morgan=require('morgan');
+require('dotenv').config();
 
+const accessLogStream=fs.createWriteStream(path.join(__dirname,'access.log'),{flags:'a'})
+
+
+
+
+app.use(morgan('combined',{stream:accessLogStream}));
+app.use(cors());
 app.use(bodyParser.json());
 app.use(userRoutes);
 app.use(expenseRoutes);
@@ -39,6 +50,6 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 sequelize.sync().then(result=>{
     //console.log(result);
-    app.listen(3000);
+    app.listen(process.env.PORT);
 })
 .catch(err=>console.log(err));
