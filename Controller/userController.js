@@ -12,17 +12,28 @@ exports.postSignUp=(req,res,next)=>{
         console.log(err);
       }
 
-      await SignUp.create({
-        name:name,
-        email:email,
-        password:hash,
-        }
-      ).then(result=>{
-        console.log(result);
-        res.json(result);
-      }).catch(err=>{
-        res.status(504).json({error:"Email Already Exist!!!"});
-      })
+      const user =  SignUp.findOne({where : { email }});
+
+      console.log("HHHH "+user.email)
+      console.log(user.email===email)
+      console.log(user.email)
+
+      if(user.email===email){
+        res.status(501).json({message:"Email Already Exist!!!"});
+      }else{
+        await SignUp.create({
+          name:name,
+          email:email,
+          password:hash,
+          }
+        ).then(result=>{
+          res.status(200).json({result:result});
+        }).catch(err=>{
+          res.status(504).json({message:"Something went Wrong"});
+        })
+      }
+      
+     
 
     })
     
