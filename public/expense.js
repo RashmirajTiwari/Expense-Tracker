@@ -1,3 +1,5 @@
+
+
 function parseJwt (token) {
     var base64Url = token.split('.')[1];
     var base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
@@ -76,6 +78,7 @@ submit.addEventListener("click", async (e) => {
     //Add Expenses
     const token=localStorage.getItem('token');
     const res=  await axios.post("http://localhost:3000/postExpenses",expense,{headers:{"Authorization":token}});
+    
     showExpenses(res);
    
     }else{
@@ -153,11 +156,11 @@ list.addEventListener('click', async (e) => {
 function showExpenses(res){
         list.innerHTML += 
         `<li>
-        <span class="span" style="display:none">${res.data.id}</span>
-        <span class="span" >${res.data.itemName}</span>
-        <span class="span" >${res.data.category}</span>
-        <span class="span" >${res.data.price}</span>
-        <span class="span" >${res.data.quantity}</span>
+        <span class="span" style="display:none">${res.data.expense.id}</span>
+        <span class="span" >${res.data.expense.itemName}</span>
+        <span class="span" >${res.data.expense.category}</span>
+        <span class="span" >${res.data.expense.price}</span>
+        <span class="span" >${res.data.expense.quantity}</span>
         <button class="edit-btn">Edit</button>
         <button class="delete-btn">Delete</button>
         </li>`
